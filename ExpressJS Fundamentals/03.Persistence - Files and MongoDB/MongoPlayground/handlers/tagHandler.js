@@ -1,35 +1,42 @@
-const formidable = require('formidable')
-const Tag = require('mongoose').model('Tag')
-
+const formidable = require('formidable');
+const Tag = require('../models/tagSchema');
 
 module.exports = (req, res) => {
   if (req.pathname === '/generateTag' && req.method === 'POST') {
-    let form = new formidable.IncomingForm()
-    form.parse(req, (err, fields, files) => {
+
+    let form = new formidable.IncomingForm();
+
+    form.parse(req, function (err, fields, files) {
       if (err) {
-        throw err
+        console.log(err);
+        return;
       }
+
       res.writeHead(200, {
-        'contetnt-type' : 'text/plain'
-      })
-      const name = fields.tagName
-      Tag.create({
-        name,
-        images:[]
-      }).then(tag => {
-        res.writeHead(302, {
-          location: '/'
-        })
-        res.end()
-      }).catch(err => {
-        res.writeHead(500, {
-          'contetnt-type' : 'text/plain'
-        })
-        res.write('500 Server Error')
-        res.end()
-      })
-    })
+        'Content-Type': 'text/plain'
+      });
+
+      let name = fields.tagName;
+      Tag
+        .create({
+          name,
+          images: []
+        }).then(() => {
+          res.writeHead(302, {
+            location: '/'
+          });
+          res.end();
+        }).catch(() => {
+          res.writeHead(500, {
+            'Content-Type':'text/plain'
+          });
+          res.write('Server Error');
+          res.end();
+        });
+
+    });
+
   } else {
-    return true
+    return true;
   }
-}
+};
