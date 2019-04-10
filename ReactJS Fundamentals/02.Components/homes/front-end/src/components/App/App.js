@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Street from '../Street/Street';
 import House from '../House/House';
+import HouseDetails from '../HouseDetails/HouseDetails';
 
 class App extends Component {
   constructor(props) {
@@ -41,6 +42,12 @@ class App extends Component {
     })
   }
 
+  setCurrentHouse(idx) {
+    this.setState({
+       selectedHouseIdx: idx
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -56,10 +63,11 @@ class App extends Component {
           <h2>Houses</h2>
             {
               this.getSelectedStreetHouses() ? this.getSelectedStreetHouses().map((house, indx) => (
-                <House imageUrl={house.imageUrl} key={indx} />
+                <House selectHouse={(e) => this.setCurrentHouse(indx, e)} imageUrl={house.imageUrl} key={indx} id={indx} />
               )) : ''
             }
           </div>
+          {this.state.hasFetched ? (<HouseDetails house={this.getSelectedStreetHouses()[this.state.selectedHouseIdx]} />) : ''}
         </div>
     );
   }
